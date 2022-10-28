@@ -1,5 +1,7 @@
 Documentation for the processing-app
 
+The 'app' folder contains the processing-app and all its requirements
+
 Current Status: 
     Can accept images files
     Returns Dummy response
