@@ -5,7 +5,7 @@ import os
 from google.cloud import vision
 
 # testing that client can be initialized
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ".config\ocr-service-key.json"
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ".config\ocr-service-key.json"
 client = vision.ImageAnnotatorClient()
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
