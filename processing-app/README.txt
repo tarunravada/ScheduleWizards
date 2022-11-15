@@ -9,6 +9,7 @@ Current Status:
 
 Making Requests
     Request URL: '{host}/detect_evets' ('localhost/detect_events' , 'http://127.0.0.1:5000/detect_events')
+            Public URL: 'https://schedulewizards.ue.r.appspot.com/detect_events'
     Request type: POST
     Request Body type: form-data (multipart/form-data)
     Request Body: key: 'file'
