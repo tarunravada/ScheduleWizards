@@ -1,12 +1,10 @@
 from flask import Flask, make_response, request, jsonify
-from scripts import *
 from flask_cors import CORS
 import os
-from google.cloud import vision
+from scripts import run_event_detection
 
 # testing that client can be initialized
 # os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ".config\ocr-service-key.json"
-client = vision.ImageAnnotatorClient()
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 def allowed_file(filename):
@@ -20,15 +18,10 @@ def wrap_response(resp, status):
     response.status_code = status
     return response
 
-def dummy_response():
-    return [{"class": "ITCS 6112-091", "location": "WOODW 106", "start_time": "19:00", "end_time": "21:45", "day": "Tuesday"},
-            {"class": "ITCS 5122-001", "location": "BIOIN 105", "start_time": "11:30", "end_time": "12:45", "day": "Tuesday"},
-            {"class": "ITCS 5122-001", "location": "BIOIN 105", "start_time": "11:30", "end_time": "12:45", "day": "Thursday"},
-            {"class": "ITCS 5152-001", "location": "CHHS 155", "start_time": "18:30", "end_time": "19:45", "day": "Tuesday"},
-            {"class": "ITCS 5152-001", "location": "CHHS 155", "start_time": "18:00", "end_time": "19:45", "day": "Thursday"}]
-
-def process_that_shi(content):
-    return dummy_response()
+# @app.route('/', methods=['GET'])
+# def homepage():
+#     if request.method == 'POST':
+#         return wrap_response(jsonify(message = "Welcome to the Home Page"), 200)
 
 @app.route('/detect_events', methods=['POST'])
 def detect_events():
@@ -48,11 +41,17 @@ def detect_events():
                 message = 'Invalid form data. Request must contain an image url or image file'
                 return wrap_response(jsonify(status = status, category = category, message = message), status)
 
-            body = process_that_shi(content)
-            status = 200
-            category = "SUCCESS"
-            message = "Events extracted successfully"
-            return wrap_response(jsonify(status = status, category = category, message = message, body = body), status)
+            status, output, gc_time, process_time = run_event_detection(content)
+            if status == 200: 
+                category = "SUCCESS"
+                message = "Events extracted successfully"
+                return wrap_response(jsonify(status = status, category = category, message = message, 
+                                    events = output, gc_time = gc_time, process_time = process_time), status)
+            else:
+                category = "ERROR"
+                message = output
+                return wrap_response(jsonify(status = status, category = category, message = message, 
+                                    gc_time = gc_time, process_time = process_time), status)
 
         else:
             status = 400

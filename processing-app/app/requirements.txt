@@ -1,3 +1,6 @@
 Flask
 google-cloud-vision
 Flask-Cors
+scikit-learn
+numpy
+Pillow

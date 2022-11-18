@@ -17,14 +17,33 @@ Making Requests
 
 Response Body
     Example:{
-                "body": {
-                    "class": "ITCS6112",
-                    "end_time": "21:45",
-                    "location": "Woodward 106",
-                    "start_time": "19:00"
-                },
                 "category": "SUCCESS",
+                "events": [
+                    {
+                        "class": "ITCS 5180-091",
+                        "day": "Monday",
+                        "end_time": "21:45",
+                        "location": "CHHS 145",
+                        "start_time": "19:00"
+                    },
+                    {
+                        "class": "ITCS 6150-002",
+                        "day": "Tuesday",
+                        "end_time": "14:15",
+                        "location": "CHHS 145",
+                        "start_time": "11:30"
+                    },
+                    {
+                        "class": "ITCS 6112-091",
+                        "day": "Tuesday",
+                        "end_time": "21:45",
+                        "location": "WOODW 106",
+                        "start_time": "19:00"
+                    }
+                ],
+                "gc_time": 0.2965829372406006,
                 "message": "Events extracted successfully",
+                "process_time": 0.017855405807495117,
                 "status": 200
             }
 
