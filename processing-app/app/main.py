@@ -5,7 +5,7 @@ import os
 from google.cloud import vision
 
 # testing that client can be initialized
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ".config\ocr-service-key.json"
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = ".config\ocr-service-key.json"
 client = vision.ImageAnnotatorClient()
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
@@ -21,7 +21,11 @@ def wrap_response(resp, status):
     return response
 
 def dummy_response():
-    return {"class": "ITCS6112", "location": "Woodward 106", "start_time": "19:00", "end_time": "21:45"}
+    return [{"class": "ITCS 6112-091", "location": "WOODW 106", "start_time": "19:00", "end_time": "21:45", "day": "Tuesday"},
+            {"class": "ITCS 5122-001", "location": "BIOIN 105", "start_time": "11:30", "end_time": "12:45", "day": "Tuesday"},
+            {"class": "ITCS 5122-001", "location": "BIOIN 105", "start_time": "11:30", "end_time": "12:45", "day": "Thursday"},
+            {"class": "ITCS 5152-001", "location": "CHHS 155", "start_time": "18:30", "end_time": "19:45", "day": "Tuesday"},
+            {"class": "ITCS 5152-001", "location": "CHHS 155", "start_time": "18:00", "end_time": "19:45", "day": "Thursday"}]
 
 def process_that_shi(content):
     return dummy_response()
