@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "swizard_backend",
   "version": "1.0.0",
   "description": "backend for swizard",
   "main": "index.js",
