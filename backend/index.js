@@ -53,18 +53,11 @@ app.use(bodyParser.json())
             colorId: 1 
         }
 
-        //console.log(event)
-        //console.log(i)
+        
 
         arrEvents.push(event)
 
     }
-
-    //console.log(arrEvents)
-
-    // for(var i = 0; i < arrEvents.length; i++){
-    //     insertEvent(arrEvents[i], arrEvents[i].start.dateTime, arrEvents[i].end.dateTime)
-    // }
 
 
 }
@@ -102,14 +95,13 @@ function setStartandEnd(obj, time){
           break;
   }
 
-  //console.log(numDay);
-  //console.log(time2[0]);
+  
 
   const DateReturn = new Date();
   DateReturn.setDate(numDay-1);
   DateReturn.setHours(time2[0], time2[1], 0, 0);
 
-  //console.log(DateReturn);
+  
   return DateReturn;
 }
 app.post('/create', (req, res) => {
@@ -192,7 +184,7 @@ app.post('/create', (req, res) => {
               return;
             }
         
-            // console.log(eve);
+           
             
           });
         } else {
