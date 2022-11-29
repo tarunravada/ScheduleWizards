@@ -15,7 +15,9 @@ function App() {
   const[color, setColor] = useState(false);
   const [image, setImage] = useState();
   const [uploaded, setUploaded] = useState(false)
+  const [selectedEvents, setSelectedEvents] = useState([]);
   const [loading, setLoading] = useState(false)
+  const [checkedNo, setCheckedNo] = useState(0)
   const [errMessage, setErrorMessage] = useState('');
   const [Resevents, setResEvents] = useState([]);
   const changeColor = () => {
@@ -27,6 +29,7 @@ function App() {
   }
 
   const inputRef = useRef(null);
+  const eventsRef = useRef(null);
   window.addEventListener('scroll', changeColor)
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((authUser) => {
@@ -47,7 +50,30 @@ function App() {
       //perform some cleanup action
       unsubscribe();
     }
-  },[uploaded,user,created,errMessage,Resevents])
+  },[uploaded,user,created,errMessage,Resevents,selectedEvents])
+  
+  const handleCheck = (event) => {
+    var events_array = [...selectedEvents];
+    if (event.target.checked) {
+      events_array = [...selectedEvents, event.target.value];
+      setSelectedEvents(events_array);
+      setCheckedNo(checkedNo + 1)
+    } 
+    else  {
+      var class_name = JSON.stringify(JSON.parse(event.target.value).class)
+      var day_name = JSON.stringify(JSON.parse(event.target.value).day)
+      var idx = -1;
+      var count = 0;
+      let fresh_array = events_array.filter(val => {
+        return (JSON.stringify(JSON.parse(val).class) != class_name) && JSON.stringify(JSON.parse(val).day) != day_name
+      })
+      setSelectedEvents(fresh_array);
+      setCheckedNo(checkedNo - 1)
+    }
+    
+    
+    
+  };
   
   const signIn = () => {
     signInWithPopup(auth, provider).then(result => {
@@ -113,10 +139,19 @@ function App() {
   }
 
   const handleCreate = () => {
-    axios.post('http://localhost:3001/create', Resevents).then(result => {
+    if(checkedNo == 0){
+      setErrorMessage('Please select atleast 1 event')
+      return
+    }
+    var final_array = [];
+    selectedEvents.forEach(seve => {
+      final_array.push(JSON.parse(seve))
+    })
+    axios.post('http://localhost:3001/create', final_array).then(result => {
       setLoading(false)
       setCreated(true)
       setResEvents([]);
+      setSelectedEvents([]);
     })
     .catch(err => console.log(err))
   }
@@ -126,98 +161,21 @@ function App() {
     setUploaded(false);
     setCreated(false);
     setResEvents([]);
+    setSelectedEvents([])
+    setCheckedNo(0)
   }
 
   const handleCancel = () => {
     handleReset();
     setResEvents([]);
+    setSelectedEvents([]);
+    console.log(selectedEvents)
   }
   const handleReset = () => {
     inputRef.current.value = null;
     setUploaded(false)
   }
-  var arrEvents = [];
-  function setEvents(obj1){
-
-    const obj = obj1
-
-    
-
-    for(var i = 0; i < obj.length; i++){
-        console.log(obj[i])
-        const eventStartTime = setStartandEnd(obj[i], obj[i].start_time);
-        const eventEndTime = setStartandEnd(obj[i], obj[i].end_time);
-
-        const event = {
-            summary: obj[i].class,
-            location: obj[i].location + " UNCC",
-            description: obj[i].class,
-            start: {
-                dateTime: eventStartTime,
-                timeZone: 'America/New_York'
-            },
-            end: {
-                dateTime: eventEndTime,
-                timeZone: 'America/New_York'
-            },
-            recurrence: [
-              "RRULE:FREQ=WEEKLY;UNTIL=20221212T170000Z",
-            ],
-            colorId: 1 
-        }
-
-        arrEvents.push(event)
-
-    }
-
-    
-
-
-}
-
-
-function setStartandEnd(obj, time){
-  var day = obj.day
-  var numDay = 0;
-
-  const time2 = time.split(':');
-
   
-
-  switch(day) {
-      case "Monday":
-          numDay = 1
-          break;
-      case "Tuesday":
-          numDay = 2
-          break;
-      case "Wednesday":
-          numDay = 3
-          break;
-      case "Thursday":
-          numDay = 4
-          break;
-      case "Friday":
-          numDay = 5
-          break;
-      case "Saturday":
-          numDay = 6
-          break;
-      case "Sunday":
-          numDay = 7
-          break;
-  }
-
-  
-
-  const DateReturn = new Date();
-  DateReturn.setDate(numDay-1);
-  DateReturn.setHours(time2[0], time2[1], 0, 0);
-
-
-  return DateReturn;
-}
-
 
   return (
     <div className="App"id='app'>
@@ -225,7 +183,7 @@ function setStartandEnd(obj, time){
         <ul className= "nav_item_container">
           <div className="nav_left">
             <li className="nav_item logo">
-              <Link to='app' smooth={true} offset={-150} duration={500}>SW</Link>
+              <Link to='app'  smooth={true} offset={-150} duration={500}><span className="logo-text">Schedule Wizard ++</span></Link>
             </li>
           </div>
           <div className="nav_right">
@@ -292,21 +250,26 @@ function setStartandEnd(obj, time){
             )}
             {Resevents.length > 0? 
             (
+              
               <>
               <div className="events-container">
-                <p className="events-container-title">Confirm events to create</p>
+                <p className="events-container-title">Select events to create</p>
                   {Resevents.map(eve => (
-            
-                    <div className="display-events">
+                    
+                    <div className="events-form-container">
+                      <input type="checkbox" className="checkbox-input" onChange={handleCheck} value={JSON.stringify(eve)} ref={eventsRef}></input>
+                      <div className="display-events">
                       <strong><span className="event-labels">Class: </span>{eve.class}</strong>
                       <strong><span className="event-labels">Day: </span>{eve.day}</strong>
                       <strong><span className="event-labels">Start time: </span>{eve.start_time}</strong>
                       <strong><span className="event-labels">End time: </span>{eve.end_time}</strong>
                       <strong><span className="event-labels">Location: </span>{eve.location}</strong>
                     </div>
+                    </div>                    
+                    
                   ))}
                   <div className="action-btn-container">
-                    <a href="#ups" className="confirm-btn" onClick={handleCreate}>Confirm</a>
+                    <a href="#ups" className="confirm-btn" onClick={handleCreate}>Create</a>
                     <a href="#ups" className="cancel-btn" onClick={handleCancel}>Cancel</a>
                   </div>
                   
