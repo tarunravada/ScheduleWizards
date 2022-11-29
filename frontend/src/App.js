@@ -62,8 +62,6 @@ function App() {
     else  {
       var class_name = JSON.stringify(JSON.parse(event.target.value).class)
       var day_name = JSON.stringify(JSON.parse(event.target.value).day)
-      var idx = -1;
-      var count = 0;
       let fresh_array = events_array.filter(val => {
         return (JSON.stringify(JSON.parse(val).class) != class_name) && JSON.stringify(JSON.parse(val).day) != day_name
       })
@@ -77,7 +75,6 @@ function App() {
   
   const signIn = () => {
     signInWithPopup(auth, provider).then(result => {
-      console.log("auth user: "+result)
       setUser(result)
       setUsername(result.displayName)
     })
@@ -87,7 +84,6 @@ function App() {
   const signOut = () => {
     auth.signOut();
     axios.get('http://localhost:3001/reset').then(result => {
-      console.log("Reset Done")
     })
     .catch(err => console.log(err))
   }
@@ -169,7 +165,7 @@ function App() {
     handleReset();
     setResEvents([]);
     setSelectedEvents([]);
-    console.log(selectedEvents)
+    
   }
   const handleReset = () => {
     inputRef.current.value = null;
