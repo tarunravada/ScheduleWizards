@@ -3,6 +3,7 @@
 .env
 .venv
 .config
+shared/
 
 # Distribution / packaging
 .Python
