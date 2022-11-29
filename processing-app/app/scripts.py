@@ -225,9 +225,9 @@ def run_event_detection(content):
         process_st = time.time()
         parsed_resp = event_detection_helper(gc_resp)
         process_time = time.time() - process_st
-    except: return(550, "Something Failed :/", gc_time, process_time)
+    except: return(550, "Failed to detect events in the image", gc_time, process_time)
 
     if len(parsed_resp) > 0:
         gc.collect()
         return (200, parsed_resp, gc_time, process_time)
-    return (415, "Failed to detect events in the provided image", gc_time, process_time)
+    return (415, "Failed to detect events in the image", gc_time, process_time)
